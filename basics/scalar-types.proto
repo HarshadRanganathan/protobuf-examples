@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+/*
+  Tags 1-15 use 1 byte in space, 16 -2047 use 2 bytes in space
+*/
+message Person {
+  int32 age = 1; //default value 0
+  string first_name = 2; //default value empty string
+  string last_name = 3;
+  bytes small_picture = 4; // default value empty bytes
+  bool is_profile_verified = 5;
+  float height = 6;
+}
