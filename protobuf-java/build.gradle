@@ -1,0 +1,38 @@
+group 'com.examples.protobuf'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+// integrates with the idea plugin and automatically registers the proto files and generated Java code as sources
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+/*
+ Gradle plugin that compiles Protocol Buffer (aka. Protobuf) definition files (*.proto) in your project
+ Adds the generated Java source files to the input of the corresponding Java compilation unit (sourceSet in a Java project; variant in an Android project), so that they can be compiled along with your Java sources.
+*/
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
+    }
+}
+
+dependencies {
+    compile 'com.google.protobuf:protobuf-java:3.11.4'
+    compile 'com.google.protobuf:protobuf-java-util:3.11.4'
+}
+
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.11.4'
+    }
+}
