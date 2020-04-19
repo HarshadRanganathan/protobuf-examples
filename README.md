@@ -29,6 +29,8 @@ On import, your IDE will automatically
 
 Run `Build Project` to generate the java source files based on proto files available inside `src/main/proto` directory and automatically add them to your classpath.
 
+Note: Generated source files will be available at `build/generated/source/proto/main/java` directory.
+
 You can then run the java main program files available at `src/main/java` to work with the generated proto source files.
 
 ## References
