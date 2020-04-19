@@ -5,19 +5,68 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
+	complexpb "github.com/simple/src/complex"
+	enumerationpb "github.com/simple/src/enumeration"
 	simplepb "github.com/simple/src/simple"
 )
 
 func main() {
-	sm := doSimple()
+	fileDemo()
 
-	writeToFile("simple.bin", sm)
+	jsonDemo()
+
+	enumDemo()
+
+	complexDemo()
+}
+
+func complexDemo() {
+	cm := doComplex()
+	fmt.Println(cm)
+}
+
+func enumDemo() {
+	em := doEnum()
+	fmt.Println(em)
+}
+
+func jsonDemo() {
+	sm1 := doSimple()
+	jsonString := toJson(sm1)
+	fmt.Println(jsonString)
+
+	sm2 := &simplepb.SimpleMessage{}
+	fromJson(jsonString, sm2)
+	fmt.Println(sm2)
+}
+
+func fileDemo() {
+	sm1 := doSimple()
+
+	writeToFile("simple.bin", sm1)
 
 	sm2 := &simplepb.SimpleMessage{}
 	readFromFile("simple.bin", sm2)
-
 	fmt.Println(sm2)
+}
+
+func toJson(pb proto.Message) string {
+	marshaller := jsonpb.Marshaler{}
+	out, err := marshaller.MarshalToString(pb)
+	if err != nil {
+		log.Fatalln("Can't convert to JSON", err)
+		return ""
+	}
+	return out
+}
+
+func fromJson(in string, pb proto.Message) {
+	err := jsonpb.UnmarshalString(in, pb)
+	if err != nil {
+		log.Fatalln("Can't convert JSON to pb struct", err)
+	}
 }
 
 func writeToFile(fname string, pb proto.Message) error {
@@ -51,6 +100,34 @@ func readFromFile(fname string, pb proto.Message) error {
 	}
 
 	return nil
+}
+
+func doComplex() *complexpb.ComplexMessage {
+	cm := complexpb.ComplexMessage{
+		OneDummy: &complexpb.DummyMessage{
+			Id:   1,
+			Name: "First Message",
+		},
+		MultipleDummy: []*complexpb.DummyMessage{
+			&complexpb.DummyMessage{
+				Id:   2,
+				Name: "Second Message",
+			},
+			&complexpb.DummyMessage{
+				Id:   3,
+				Name: "Third Message",
+			},
+		},
+	}
+	return &cm
+}
+
+func doEnum() *enumerationpb.EnumMessage {
+	em := enumerationpb.EnumMessage{
+		Id:           42,
+		DayOfTheWeek: enumerationpb.DayOfTheWeek_FRIDAY,
+	}
+	return &em
 }
 
 func doSimple() *simplepb.SimpleMessage {
